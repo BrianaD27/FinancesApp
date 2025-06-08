@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import { sql } from "./config/db.js";
 
 dotenv.config();
-
 const app = express();
 
 //Built in Middleware
@@ -28,10 +27,10 @@ async function initDB() {
             category VARCHAR(255) NOT NULL,
             created_at DATE NOT NULL DEFAULT CURRENT_DATE
         )`;
-        // DECIMAL(10,2) 
-        // means: fixed point number with 10 digits IN TOTAL
-        //        and 2 digits after decimal place
-        // therefore: Max value can only hold 8 digits 
+    // DECIMAL(10,2)
+    // means: fixed point number with 10 digits IN TOTAL
+    //        and 2 digits after decimal place
+    // therefore: Max value can only hold 8 digits
 
     console.log("Database created");
   } catch (error) {
@@ -41,61 +40,74 @@ async function initDB() {
 }
 
 // Runs after Custom Middleware example
-app.get("/", (req, res) => {
-  res.send("It's Working!!!!")
-})
+// app.get("/", (req, res) => {
+//   res.send("It's Working!!!!");
+// });
 
 //Lets us get data by user ID
 app.get("/api/transactions/:userId", async (req, res) => {
   try {
-    const userId = req.params
-    console.log(userId);
-    res.status(200).json(userId)
+    const {userId} = req.params;
+    
+    const transactions = await sql`
+      SELECT * FROM transactions WHERE user_id = ${userId} ORDER BY created_at DESC
+    `;
+
+    res.status(200).json(transactions);
 
   } catch (error) {
-    console.log("Error getting the transaction: ", error)
-    res.status(500).json({message: "Internal Server Error"})
+    console.log("Error getting the transaction: ", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
-})
+});
 
 // API Endpoint for Posting Transactions
 app.post("/api/transactions", async (req, res) => {
   // title, amount, category, user_id (Date is automatically created)
   try {
-    const {title, amount, category, user_id} = req.body
+    const { title, amount, category, user_id } = req.body;
 
-    if (!title || amount===undefined || !category || !user_id) {
-      return res.status(400).json({message: "All fields are required!"})
+    if (!title || amount === undefined || !category || !user_id) {
+      return res.status(400).json({ message: "All fields are required!" });
     }
 
     const transaction = await sql`
       INSERT INTO transactions(user_id, title, amount, category)
       VALUES (${user_id}, ${title}, ${amount}, ${category})
       RETURNING *
-    `
-    console.log(transaction[0])
-    res.status(201).json(transaction[0])
-
+    `;
+    console.log(transaction[0]);
+    res.status(201).json(transaction[0]);
   } catch (error) {
-    console.log("Error creating transaction: ", error)
-    res.status(500).json({message: "Internal Server Error"})
+    console.log("Error creating transaction: ", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
-
-})
-
-
-
-
-
-
-
-
-// Sends or requests info from localhost:5001/(first parameter)
-app.get("/", (request, response) => {
-  response.send("It's working!!!!");
 });
 
-console.log("my port: ", PORT);
+// API Endpoint for Deleting Transactions
+app.delete("/api/transactions/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      if (isNaN(parseInt(id))) {
+        res.status(400).json({message: "Invalid Transaction Id"})
+      }
+
+      const deleted = await sql`
+        DELETE FROM transactions WHERE id = ${id} RETURNING *
+      `
+
+      if (deleted.length == 0) {
+        res.status(404).json({message: "Sorry. Transaction not found :("})
+      }
+
+      res.status(200).json(deleted);
+
+    } catch (error) {
+      console.log("Error getting the transaction: ", error);
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+})
 
 initDB().then(() => {
   app.listen(PORT, () => {
