@@ -5,8 +5,19 @@ import { sql } from "./config/db.js";
 dotenv.config();
 
 const app = express();
+
+//Built in Middleware
+app.use(express.json());
+
+//Custom Middleware example app.use always for middleware
+// app.use((req, res, next) => {
+//   console.log("Hey we hit a req, the method is: ", req.method);
+//   next();
+// })
+
 const PORT = process.env.PORT || 5001;
 
+// Initialized Database and connected to it
 async function initDB() {
   try {
     await sql`CREATE TABLE IF NOT EXISTS transactions(
@@ -28,6 +39,56 @@ async function initDB() {
     process.exit(1); // status code 1 = fail, 0 = success
   }
 }
+
+// Runs after Custom Middleware example
+app.get("/", (req, res) => {
+  res.send("It's Working!!!!")
+})
+
+//Lets us get data by user ID
+app.get("/api/transactions/:userId", async (req, res) => {
+  try {
+    const userId = req.params
+    console.log(userId);
+    res.status(200).json(userId)
+
+  } catch (error) {
+    console.log("Error getting the transaction: ", error)
+    res.status(500).json({message: "Internal Server Error"})
+  }
+})
+
+// API Endpoint for Posting Transactions
+app.post("/api/transactions", async (req, res) => {
+  // title, amount, category, user_id (Date is automatically created)
+  try {
+    const {title, amount, category, user_id} = req.body
+
+    if (!title || amount===undefined || !category || !user_id) {
+      return res.status(400).json({message: "All fields are required!"})
+    }
+
+    const transaction = await sql`
+      INSERT INTO transactions(user_id, title, amount, category)
+      VALUES (${user_id}, ${title}, ${amount}, ${category})
+      RETURNING *
+    `
+    console.log(transaction[0])
+    res.status(201).json(transaction[0])
+
+  } catch (error) {
+    console.log("Error creating transaction: ", error)
+    res.status(500).json({message: "Internal Server Error"})
+  }
+
+})
+
+
+
+
+
+
+
 
 // Sends or requests info from localhost:5001/(first parameter)
 app.get("/", (request, response) => {
