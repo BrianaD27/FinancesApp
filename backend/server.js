@@ -104,10 +104,52 @@ app.delete("/api/transactions/:id", async (req, res) => {
       res.status(200).json(deleted);
 
     } catch (error) {
-      console.log("Error getting the transaction: ", error);
+      console.log("Error deleting the transaction: ", error);
       res.status(500).json({ message: "Internal Server Error" });
     }
 })
+
+// API Endpoint for Transaction summary 
+app.get("/api/transactions/summary/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    if (isNaN(parseInt(userId))) {
+      res.status(404).json({ message: "Invalid user id"})
+    }
+
+    // Find total sum of all amounts from a certain user and assign the total the variable
+    // name 'balance'. Coalesce forces the amount to be 0 if user has no previous transactions
+    const balanceResult = await sql`
+      SELECT COALESCE(SUM(amount), 0) as balance 
+      FROM transactions 
+      WHERE user_id = ${userId}
+    `
+
+    const incomeResult = await sql`
+      SELECT COALESCE(SUM(amount), 0) as income 
+      FROM transactions 
+      WHERE user_id = ${userId} AND amount > 0
+    `
+
+    const expensesResult = await sql`
+      SELECT COALESCE(SUM(amount), 0) as expenses 
+      FROM transactions 
+      WHERE user_id = ${userId} AND amount < 0
+    `
+
+    res.status(200).json({
+      balance: balanceResult[0].balance,
+      income: incomeResult[0].income,
+      expenses: expensesResult[0].expenses
+    })
+
+  } catch (error) {
+    console.log("Error getting the transaction summary: ", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+})
+
 
 initDB().then(() => {
   app.listen(PORT, () => {
