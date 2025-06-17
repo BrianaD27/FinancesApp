@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import { initDB } from "./config/db.js";
 import rateLimiter from "./middleware/rateLimiter.js";
-import transactionRoutes from "./routes/transactionsRoutes.js"
+import transactionRoutes from "./routes/transactionsRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -20,11 +20,11 @@ app.use(express.json());
 const PORT = process.env.PORT || 5001;
 
 app.get("/health", (req, res) => {
-  res.send("It's Working!")
-}) 
+  res.send("It's Working!");
+});
 
 // Mount router middleware for transaction-related endpoints
-app.use("/api/transactions", transactionRoutes)
+app.use("/api/transactions", transactionRoutes);
 
 initDB().then(() => {
   app.listen(PORT, () => {
