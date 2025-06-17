@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": [
+    "**/*.js",
+    "**/*.jsx",
+    "app/index.jsx",
+    "app/_layout.jsx",
+    ".expo/types/**/*.js",
+    "expo-env.d.js"
+  ]
+}
