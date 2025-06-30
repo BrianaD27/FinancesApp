@@ -8,7 +8,7 @@
   "include": [
     "**/*.js",
     "**/*.jsx",
-    "app/(auth)/index.jsx",
+    "app/(auth)/signin.jsx",
     "app/(auth)/_layout.jsx",
     ".expo/types/**/*.js",
     "expo-env.d.js"

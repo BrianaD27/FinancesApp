@@ -8,6 +8,7 @@ export const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
     padding: 20,
     justifyContent: "center",
+    alignContent: 'center',
   },
   illustration: {
     width: "100%",
