@@ -3,7 +3,11 @@ import React from 'react'
 
 const Chatbot = () => {
   return (
-    <View>
+    <View style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+      }}>
       <Text>Chatbot</Text>
     </View>
   )

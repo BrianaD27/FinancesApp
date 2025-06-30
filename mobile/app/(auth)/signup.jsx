@@ -3,7 +3,12 @@ import React from 'react'
 
 const Signup = () => {
   return (
-    <View>
+    <View style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       <Text>Signup</Text>
     </View>
   )
