@@ -1,4 +1,4 @@
-* WORK IN PROGRESS *
+![Status](https://img.shields.io/badge/status-work--in--progress-yellow)
 
 💰 Personal Finance Tracker
 
