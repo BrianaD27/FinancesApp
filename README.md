@@ -16,7 +16,7 @@ A cross-platform mobile app that helps users track income, expenses, and investm
 - Frontend: React Native, Figma (UI/UX design)
 - Backend: Express.js (Node.js)
 - Database: PostgreSQL
-- Caching: Redis
+- Rate Limiting: Redis
 - Version Control: GitHub
 
 📦 Installation & Setup
