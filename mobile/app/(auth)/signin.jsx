@@ -1,9 +1,16 @@
 import { useSignIn } from "@clerk/clerk-expo";
 import { Link, useRouter } from "expo-router";
-import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React from "react";
 import { styles } from "@/assets/styles/auth.styles";
 import { Image } from "expo-image";
+import { useSocialAuth } from "@/hooks/useSocialAuth";
 
 export default function Signin() {
   const { signIn, setActive, isLoaded } = useSignIn();
@@ -40,13 +47,15 @@ export default function Signin() {
     }
   };
 
+  const [isLoading, handleSocialAuth] = useSocialAuth();
+
   return (
     <View style={styles.container}>
       <Image
         style={styles.illustration}
         source={require("./../../assets/images/signIn.png")}
       />
-      <Text style={styles.title}>Welcome Back</Text>
+      <Text style={styles.title}>Welcome Back!</Text>
       <TextInput
         style={styles.input}
         autoCapitalize="none"
@@ -61,13 +70,30 @@ export default function Signin() {
         secureTextEntry={true}
         onChangeText={(password) => setPassword(password)}
       />
+
       <TouchableOpacity onPress={onSignInPress} style={styles.button}>
-        <Text style={styles.buttonText}>Continue</Text>
+        {isLoading ? (
+          <ActivityIndicator size={"small"} color={"white"} />
+        ) : (
+          <Text style={styles.buttonText}>Sign In</Text>
+        )}
       </TouchableOpacity>
 
-      <View
-        style={styles.footerContainer}
-      >
+      <TouchableOpacity onPress={() => {handleSocialAuth("oauth_google")}} style={styles.googleButton}>
+        {isLoading ? (
+          <ActivityIndicator size={"small"} color={"black"} />
+        ) : (
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Image
+              source={require("../../assets/images/google.png")}
+              style={{ height: "35", width: "40", contentFit: "contain" }}
+            />
+            <Text style={styles.googleButtonText}>Sign In with Google</Text>
+          </View>
+        )}
+      </TouchableOpacity>
+
+      <View style={styles.footerContainer}>
         <Text>Don&apos;t have an account?</Text>
         <Link href="/signup">
           <Text style={styles.linkText}>Sign Up</Text>

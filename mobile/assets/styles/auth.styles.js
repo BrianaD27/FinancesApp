@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
   },
   illustration: {
     width: "100%",
-    height: 310,
+    height: 300,
     resizeMode: "contain",
   },
   title: {
@@ -40,8 +40,24 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     alignItems: "center",
-    marginTop: 10,
-    marginBottom: 20,
+    marginBottom: 16,
+  },
+  googleButton: {
+    backgroundColor: COLORS.white,
+    justifyContent: "center",
+    flexDirection: "row",
+    borderColor: "black",
+    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+    borderRadius: 12,
+    padding: 10,
+    marginBottom: 16,
+    alignItems: "center",
+   
+  },
+  googleButtonText: {
+    color: "black",
+    fontSize: 18,
+    fontWeight: "400",
   },
   buttonText: {
     color: COLORS.white,
