@@ -22,6 +22,17 @@ export async function initDB() {
     //        and 2 digits after decimal place
     // therefore: Max value can only hold 8 digits
 
+    await sql`CREATE TABLE IF NOT EXISTS goals(
+            id SERIAL PRIMARY KEY,
+            user_id VARCHAR(255) NOT NULL,
+            goal_title VARCHAR(255) NOT NULL,
+            target_amount DECIMAL(10,2) NOT NULL,
+            category VARCHAR(255) NOT NULL,
+            progress DECIMAL(10,2) NOT NULL DEFAULT 0,
+            deadline DATE,
+            created_at DATE NOT NULL DEFAULT CURRENT_DATE,
+    )`
+
     console.log("Database created");
   } catch (error) {
     console.log("Error Creating Database: ", error);

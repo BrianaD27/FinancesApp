@@ -49,7 +49,7 @@ export async function deleteTransaction(req, res) {
           `;
 
     if (deleted.length == 0) {
-      res.status(404).json({ message: "Sorry. Transaction not found :(" });
+      res.status(404).json({ message: "Transaction not found" });
     }
 
     res.status(200).json(deleted);
